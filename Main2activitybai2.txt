@@ -1,0 +1,30 @@
+package com.example.bai2
+
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import com.example.bai2.databinding.NextBinding
+
+class MainActivity2 : AppCompatActivity() {
+    lateinit var binding: NextBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        binding = NextBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val t1Value = intent.getStringExtra("t1")
+        binding.tv1.text = String.format("Toán: %s", t1Value)
+        //binding.tv1.setText(intent.getStringExtra("t1"))
+        val t2Value = intent.getStringExtra("t2")
+        binding.tv2.text = String.format("Lý: %s", t2Value)
+        //binding.tv2.setText(intent.getStringExtra("t2"))
+        val t3Value = intent.getStringExtra("t3")
+        binding.tv3.text = String.format("Hóa: %s", t3Value)
+        binding.tv5.setText(intent.getStringExtra("t5"))
+        if (intent.getBooleanExtra("t4", true)) binding.tv4.setText("uu tien")
+        else binding.tv4.setText("khong uu tien")
+        binding.bt1.setOnClickListener {
+            finish()
+        }
+        }
+    }

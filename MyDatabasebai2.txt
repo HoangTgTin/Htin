@@ -1,0 +1,19 @@
+package com.example.qlsv_k20
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+
+class MyDB (context: Context, name: String ,version: Int ) : SQLiteOpenHelper(context, name, null, version) {
+    override fun onCreate(db: SQLiteDatabase?) {
+        val sql = "create table SV(ten text, sdt text primary key, ngaysinh text, gioitinh text)"
+        db?.execSQL(sql)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
+        val sql = "drop table if exists SV"
+        db?.execSQL(sql)
+        onCreate(db)
+    }
+
+}

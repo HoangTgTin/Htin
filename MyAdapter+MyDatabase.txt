@@ -1,0 +1,57 @@
+package com.example.k19_2
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView.Adapter
+
+class MyAdapter (var list: MutableList<Infor>, val click: (Int) -> Unit) : Adapter<MyHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
+    //Tao ra cac VH
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item,parent,false)
+        view.setOnClickListener {
+            list.removeAt(parent.indexOfChild(view))
+            notifyItemRemoved(parent.indexOfChild(view))
+            true
+        }
+        view.setOnClickListener {
+        click(parent.indexOfChild(view))
+        }
+        return  MyHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+    //Tra ve so luong VH
+        return list.size
+    }
+
+    override fun onBindViewHolder(holder: MyHolder, position: Int) {
+        //gan du lieu vao VH
+        holder.tvItem.text = list[position].name
+        holder.tvNhietdo.text = list[position].nhietdo.toString()
+        holder.tvDoam.text = list[position].doam.toString()
+        if (list[position].nhietdo < 25 && list[position].doam > 80){
+            holder.ivItem.setImageResource(R.drawable.rainy)
+    } else {
+            holder.ivItem.setImageResource(R.drawable.cloudy)
+        }
+    }
+}
+package com.example.k19_2
+
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
+import androidx.lifecycle.ViewModelProvider
+
+class MyDatabase(context: Context, name: String, version: Int ) : SQLiteOpenHelper(context, name, null, version) {
+    override fun onCreate(db: SQLiteDatabase?) {
+        val sql = "create table thoitiet (ngaythang text primary key, nhietdo text, doam text)"
+        db?.execSQL(sql)
+    }
+
+    override fun onUpgrade(db: SQLiteDatabase?, p1: Int, p2: Int) {
+        val sql = "drop table if exists thoitiet"
+        db?.execSQL(sql)
+        onCreate(db)
+    }
+}

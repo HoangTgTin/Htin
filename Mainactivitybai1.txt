@@ -1,0 +1,60 @@
+package com.example.k19_2
+
+import android.content.ContentValues
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.k19_2.databinding.MainBinding
+
+class MainActivity : AppCompatActivity() {
+    lateinit var bind: MainBinding
+    lateinit var adapter: MyAdapter
+    var id = 0
+    lateinit var db: MyDatabase
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        bind = MainBinding.inflate(layoutInflater)
+        setContentView(bind.root)
+        db = MyDatabase(this, "k19_2.db", 1)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+        adapter = MyAdapter(data) {
+            id = it
+            bind.tvNgaythang.setText(data[id].name)
+            bind.tvNhietdo.setText(data[id].nhietdo.toString())
+            bind.tvDoam.setText(data[id].doam.toString())
+        }
+        bind.rcv.layoutManager = LinearLayoutManager(this)
+        bind.rcv.adapter = adapter
+        bind.btSubmit.setOnClickListener {
+            val t1 = bind.tvNgaythang.text.toString()
+            val t2 = bind.tvNhietdo.text.toString()
+            val t3 = bind.tvDoam.text.toString()
+            data[id] = Infor(t1, t2.toInt(), t3.toInt())
+            adapter.notifyItemChanged(id)
+        }
+        bind.btSave.setOnClickListener {
+            val mydb = db.writableDatabase
+            val t1 = bind.tvNgaythang.text.toString()
+            val t2 = bind.tvNhietdo.text.toString()
+            val t3 = bind.tvDoam.text.toString()
+            val value = ContentValues()
+            value.put("ngaythang", t1)
+            value.put("nhietdo", t2)
+            value.put("doam", t3)
+            val k = mydb.insert("thoitiet", null, value)
+            if (k > 0) {
+                data.add(Infor(t1, t2.toInt(), t3.toInt()))
+                adapter.notifyItemInserted(data.size - 1)
+            }
+            mydb.close()
+        }
+    }
+}
